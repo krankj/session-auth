@@ -1,14 +1,24 @@
 import express from "express";
-import { PORT, NODE_ENV } from "./config";
+import mongoose from "mongoose";
+import { PORT, NODE_ENV, MONGO_URI } from "./config";
 import { userRoutes } from "./routes/index";
 
-const app = express();
-app.disable("x-powered-by");
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+(async () => {
+  try {
+    await mongoose.connect(MONGO_URI, { useNewUrlParser: true });
+    console.log("MongoDB connected");
 
-const apiRouter = express.Router();
-app.use("/api", apiRouter);
-apiRouter.use("/users", userRoutes);
+    const app = express();
+    app.disable("x-powered-by");
+    app.use(express.urlencoded({ extended: true }));
+    app.use(express.json());
 
-app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
+    const apiRouter = express.Router();
+    app.use("/api", apiRouter);
+    apiRouter.use("/users", userRoutes);
+
+    app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
+  } catch (err) {
+    console.log(err);
+  }
+})();
