@@ -1,2 +1,4 @@
 import userRoutes from "./user";
-export { userRoutes };
+import sessionRoutes from "./session";
+
+export { userRoutes, sessionRoutes };
